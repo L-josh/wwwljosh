@@ -12,7 +12,7 @@ export interface OutputEntry {
 
 let nextId = 0;
 
-export function useTerminal(initialOutput: OutputEntry[] = []) {
+export function useTerminal(initialOutput: OutputEntry[] = [], onPowerOff?: () => void) {
   const [output, setOutput] = useState<OutputEntry[]>(initialOutput);
 
   const executeCommand = useCallback((rawInput: string) => {
@@ -54,6 +54,11 @@ export function useTerminal(initialOutput: OutputEntry[] = []) {
       return;
     }
 
+    if (result === 'POWEROFF') {
+      onPowerOff?.();
+      return;
+    }
+
     const responseEntry: OutputEntry = {
       id: nextId++,
       type: 'response',
@@ -61,7 +66,7 @@ export function useTerminal(initialOutput: OutputEntry[] = []) {
     };
 
     setOutput((prev) => [...prev, commandEntry, responseEntry]);
-  }, []);
+  }, [onPowerOff]);
 
   const clearOutput = useCallback(() => {
     setOutput([]);
