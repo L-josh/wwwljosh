@@ -6,7 +6,7 @@ interface BootSequenceProps {
 
 const SYSINFO_LINES = [
   'JOS Personal Computer BIOS v1.02',
-  'Copyright (C) 2026 JDL Corp.',
+  'Copyright (C) 2026 L-josh.',
   '',
   'Main Processor : Josh 8088',
   'Numeric Processor : None',
@@ -26,31 +26,29 @@ export default function BootSequence({ onComplete }: BootSequenceProps) {
   const [sysinfoText, setSysinfoText] = useState('');
   const completedRef = useRef(false);
 
-  // Phase 1: Memory count from 001 to 512 over ~4 seconds
+  // Phase 1: Memory count in semi-random chunks up to 512
   useEffect(() => {
     if (phase !== 'memory') return;
 
     const targetKB = 512;
-    const duration = 2500;
-    const startTime = performance.now();
-
-    let rafId: number;
+    let currentKB = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
     function tick() {
-      const elapsed = performance.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const currentKB = Math.max(1, Math.round(progress * targetKB));
+      const chunk = 4 + Math.floor(Math.random() * 13); // 4–16 KB per step
+      currentKB = Math.min(currentKB + chunk, targetKB);
       setMemoryKB(currentKB);
 
-      if (progress < 1) {
-        rafId = requestAnimationFrame(tick);
+      if (currentKB < targetKB) {
+        const delay = 30 + Math.floor(Math.random() * 50); // 30–80ms per step
+        timeoutId = setTimeout(tick, delay);
       } else {
         setPhase('cursor');
       }
     }
 
-    rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
+    tick();
+    return () => clearTimeout(timeoutId);
   }, [phase]);
 
   // Phase 2: Blinking cursor for ~2.5 seconds

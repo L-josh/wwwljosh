@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { useTerminal } from '../hooks/useTerminal';
 import type { OutputEntry } from '../hooks/useTerminal';
 import { useCommandHistory } from '../hooks/useCommandHistory';
@@ -7,7 +7,7 @@ import TerminalOutput from './TerminalOutput';
 import TerminalInput from './TerminalInput';
 import BootSequence from './BootSequence';
 
-const MOTD_TEXT = 'The JOSH LANE Personal Computer JOS\nVersion 1.00 (C)Copyright JDL 2026';
+const MOTD_TEXT = 'The JDL Personal Computer JOS\nVersion 1.00 (C)Copyright L-josh 2026';
 
 let nextMotdId = -100;
 
@@ -16,19 +16,37 @@ const MOTD: OutputEntry[] = [
     id: nextMotdId++,
     type: 'response',
     content: [
-      textLine('The JOSH LANE Personal Computer JOS'),
-      textLine('Version 1.00 (C)Copyright JDL 2026'),
+      textLine('The JDL Personal Computer JOS'),
+      textLine('Version 1.00 (C)Copyright L-josh 2026'),
       emptyLine(),
     ],
   },
 ];
 
+type Phase = 'turning-on' | 'booting' | 'typing-motd' | 'ready' | 'shutting-down' | 'off';
+
+const SHUTDOWN_DURATION = 800;
+const TURNON_DURATION = 1500;
+
 export default function Terminal() {
-  const { output, executeCommand } = useTerminal(MOTD);
-  const { push, navigateUp, navigateDown } = useCommandHistory();
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const [phase, setPhase] = useState<'booting' | 'typing-motd' | 'ready'>('booting');
+  const [phase, setPhase] = useState<Phase>('turning-on');
   const [motdVisible, setMotdVisible] = useState('');
+  const terminalRef = useRef<HTMLDivElement>(null);
+
+  const handlePowerOff = useCallback(() => {
+    setPhase('shutting-down');
+    setTimeout(() => setPhase('off'), SHUTDOWN_DURATION);
+  }, []);
+
+  const { output, executeCommand } = useTerminal(MOTD, handlePowerOff);
+  const { push, navigateUp, navigateDown } = useCommandHistory();
+
+  // Transition from turn-on animation to boot sequence
+  useEffect(() => {
+    if (phase !== 'turning-on') return;
+    const timeout = setTimeout(() => setPhase('booting'), TURNON_DURATION);
+    return () => clearTimeout(timeout);
+  }, [phase]);
 
   // Auto-scroll to bottom on new output
   useEffect(() => {
@@ -71,32 +89,43 @@ export default function Terminal() {
     executeCommand(command);
   };
 
+  // Determine screen CSS class
+  const screenClass = [
+    'monitor-screen',
+    phase === 'turning-on' && 'crt-turning-on',
+    phase === 'shutting-down' && 'crt-shutting-down',
+    phase === 'off' && 'crt-off',
+  ].filter(Boolean).join(' ');
+
+  const isOff = phase === 'off';
+
   return (
     <div className="monitor-container">
       <div className="monitor">
         <div className="monitor-bezel">
-          <div className="monitor-screen">
+          <div className={screenClass}>
             <div className="crt-overlay" />
             <div className="terminal" ref={terminalRef} onClick={handleClick}>
-              {phase === 'booting' ? (
-                <BootSequence onComplete={() => setPhase('typing-motd')} />
-              ) : phase === 'typing-motd' ? (
-                <div className="terminal-output">
-                  <div className="output-entry boot-sysinfo">
-                    {motdVisible}
-                    <span className="cursor">_</span>
+              {phase === 'turning-on' ? null
+                : phase === 'booting' ? (
+                  <BootSequence onComplete={() => setPhase('typing-motd')} />
+                ) : phase === 'typing-motd' ? (
+                  <div className="terminal-output">
+                    <div className="output-entry boot-sysinfo">
+                      {motdVisible}
+                      <span className="cursor">_</span>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <>
-                  <TerminalOutput entries={output} />
-                  <TerminalInput
-                    onSubmit={handleSubmit}
-                    onNavigateUp={navigateUp}
-                    onNavigateDown={navigateDown}
-                  />
-                </>
-              )}
+                ) : phase === 'ready' ? (
+                  <>
+                    <TerminalOutput entries={output} />
+                    <TerminalInput
+                      onSubmit={handleSubmit}
+                      onNavigateUp={navigateUp}
+                      onNavigateDown={navigateDown}
+                    />
+                  </>
+                ) : null}
             </div>
           </div>
         </div>
@@ -112,7 +141,7 @@ export default function Terminal() {
           </div>
           <div className="monitor-model">VIDEO MONITOR &bull; MODEL 1702</div>
           <div className="monitor-controls">
-            <div className="monitor-led" />
+            <div className={isOff ? 'monitor-led monitor-led-off' : 'monitor-led'} />
             <div className="monitor-knob" />
             <div className="monitor-knob" />
           </div>
