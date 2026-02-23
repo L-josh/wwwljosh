@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
 
-const PROMPT = 'A>';
+const PROMPT = 'A> ';
 
 interface TerminalInputProps {
   onSubmit: (command: string) => void;
