@@ -1,7 +1,7 @@
 import type { OutputEntry } from '../hooks/useTerminal';
 import OutputLine from './OutputLine';
 
-const PROMPT = 'C:\\LJOSH> ';
+const PROMPT = 'A>';
 
 interface TerminalOutputProps {
   entries: OutputEntry[];

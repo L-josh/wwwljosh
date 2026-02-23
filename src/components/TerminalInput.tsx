@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
 
-const PROMPT = 'C:\\LJOSH> ';
+const PROMPT = 'A>';
 
 interface TerminalInputProps {
   onSubmit: (command: string) => void;
@@ -37,11 +37,15 @@ export default function TerminalInput({
   };
 
   return (
-    <div className="terminal-input-line">
+    <div className="terminal-input-line" onClick={() => inputRef.current?.focus()}>
       <span className="prompt">{PROMPT}</span>
+      <span className="input-display">
+        {input}
+        <span className="cursor">_</span>
+      </span>
       <input
         ref={inputRef}
-        className="terminal-input"
+        className="terminal-input-hidden"
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
@@ -52,7 +56,6 @@ export default function TerminalInput({
         autoCorrect="off"
         autoCapitalize="off"
       />
-      <span className="cursor" />
     </div>
   );
 }
