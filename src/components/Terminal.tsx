@@ -72,29 +72,52 @@ export default function Terminal() {
   };
 
   return (
-    <>
-      <div className="crt-overlay" />
-      <div className="terminal" ref={terminalRef} onClick={handleClick}>
-        {phase === 'booting' ? (
-          <BootSequence onComplete={() => setPhase('typing-motd')} />
-        ) : phase === 'typing-motd' ? (
-          <div className="terminal-output">
-            <div className="output-entry boot-sysinfo">
-              {motdVisible}
-              <span className="cursor">_</span>
+    <div className="monitor-container">
+      <div className="monitor">
+        <div className="monitor-bezel">
+          <div className="monitor-screen">
+            <div className="crt-overlay" />
+            <div className="terminal" ref={terminalRef} onClick={handleClick}>
+              {phase === 'booting' ? (
+                <BootSequence onComplete={() => setPhase('typing-motd')} />
+              ) : phase === 'typing-motd' ? (
+                <div className="terminal-output">
+                  <div className="output-entry boot-sysinfo">
+                    {motdVisible}
+                    <span className="cursor">_</span>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <TerminalOutput entries={output} />
+                  <TerminalInput
+                    onSubmit={handleSubmit}
+                    onNavigateUp={navigateUp}
+                    onNavigateDown={navigateDown}
+                  />
+                </>
+              )}
             </div>
           </div>
-        ) : (
-          <>
-            <TerminalOutput entries={output} />
-            <TerminalInput
-              onSubmit={handleSubmit}
-              onNavigateUp={navigateUp}
-              onNavigateDown={navigateDown}
-            />
-          </>
-        )}
+        </div>
+        <div className="monitor-bottom">
+          <div className="monitor-brand">
+            <span className="monitor-brand-logo">
+              <span className="rainbow-bar rb-red" />
+              <span className="rainbow-bar rb-green" />
+              <span className="rainbow-bar rb-blue" />
+              <span className="rainbow-bar rb-yellow" />
+            </span>
+            <span className="monitor-brand-text">jdl</span>
+          </div>
+          <div className="monitor-model">VIDEO MONITOR &bull; MODEL 1702</div>
+          <div className="monitor-controls">
+            <div className="monitor-led" />
+            <div className="monitor-knob" />
+            <div className="monitor-knob" />
+          </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 }
