@@ -1,0 +1,135 @@
+:root {
+  --terminal-green: #33ff33;
+  --terminal-green-dim: #1a8c1a;
+  --terminal-bg: #0a0a0a;
+  --terminal-amber: #ffb000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  line-height: 1.4;
+  background-color: var(--terminal-bg);
+  color: var(--terminal-green);
+}
+
+a {
+  color: var(--terminal-amber);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Terminal container */
+.terminal {
+  height: 100%;
+  width: 100%;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.4);
+}
+
+.terminal-output {
+  flex: 1;
+}
+
+/* Input line */
+.terminal-input-line {
+  display: flex;
+  align-items: center;
+  white-space: pre;
+}
+
+.terminal-input-line .prompt {
+  color: var(--terminal-green);
+  flex-shrink: 0;
+}
+
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--terminal-green);
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  line-height: 1.4;
+  flex: 1;
+  caret-color: transparent;
+}
+
+/* Blinking cursor */
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 1.2em;
+  background-color: var(--terminal-green);
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Output lines */
+.output-entry {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.output-command .prompt {
+  color: var(--terminal-green);
+}
+
+/* CRT scanline overlay */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Scrollbar */
+.terminal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.terminal::-webkit-scrollbar-track {
+  background: var(--terminal-bg);
+}
+
+.terminal::-webkit-scrollbar-thumb {
+  background: var(--terminal-green-dim);
+}
+
+/* Accent color for special output */
+.accent {
+  color: var(--terminal-amber);
+}
