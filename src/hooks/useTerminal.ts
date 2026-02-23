@@ -12,8 +12,8 @@ export interface OutputEntry {
 
 let nextId = 0;
 
-export function useTerminal() {
-  const [output, setOutput] = useState<OutputEntry[]>([]);
+export function useTerminal(initialOutput: OutputEntry[] = []) {
+  const [output, setOutput] = useState<OutputEntry[]>(initialOutput);
 
   const executeCommand = useCallback((rawInput: string) => {
     const { name, args } = parseCommand(rawInput);

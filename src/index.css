@@ -46,7 +46,7 @@ a:hover {
 }
 
 .terminal-output {
-  flex: 1;
+  flex-shrink: 0;
 }
 
 /* Input line */
@@ -61,26 +61,21 @@ a:hover {
   flex-shrink: 0;
 }
 
-.terminal-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--terminal-green);
-  font-family: 'VT323', monospace;
-  font-size: 18px;
-  line-height: 1.4;
-  flex: 1;
-  caret-color: transparent;
+/* Hidden input that captures keystrokes */
+.terminal-input-hidden {
+  position: fixed;
+  left: -9999px;
+  opacity: 0;
 }
 
-/* Blinking cursor */
+/* Visible text + cursor rendered inline */
+.input-display {
+  color: var(--terminal-green);
+}
+
+/* Blinking underscore cursor */
 .cursor {
-  display: inline-block;
-  width: 10px;
-  height: 1.2em;
-  background-color: var(--terminal-green);
   animation: blink 1s step-end infinite;
-  vertical-align: text-bottom;
 }
 
 @keyframes blink {
@@ -132,4 +127,21 @@ a:hover {
 /* Accent color for special output */
 .accent {
   color: var(--terminal-amber);
+}
+
+/* Boot sequence */
+.boot-sequence {
+  white-space: pre-wrap;
+}
+
+.boot-sysinfo {
+  white-space: pre-wrap;
+}
+
+.boot-cursor {
+  animation: blink 1s step-end infinite;
+}
+
+.boot-cursor-hidden {
+  visibility: hidden;
 }
