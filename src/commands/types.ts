@@ -13,7 +13,7 @@ export interface CommandContext {}
 export interface CommandHandler {
   name: string;
   description: string;
-  execute: (args: string[], ctx: CommandContext) => CommandOutput | 'CLEAR' | 'POWEROFF';
+  execute: (args: string[], ctx: CommandContext) => CommandOutput | 'CLEAR' | 'POWEROFF' | 'PONG';
 }
 
 // Helper to create a simple text line

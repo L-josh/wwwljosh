@@ -5,6 +5,7 @@ import { contactCommand } from './contact';
 import { clearCommand } from './clear';
 import { helpCommand } from './help';
 import { poweroffCommand } from './poweroff';
+import { pongCommand } from './pong';
 
 const commands: Map<string, CommandHandler> = new Map();
 
@@ -18,6 +19,7 @@ register(skillsCommand);
 register(contactCommand);
 register(clearCommand);
 register(poweroffCommand);
+register(pongCommand);
 
 export function getCommand(name: string): CommandHandler | undefined {
   return commands.get(name.toLowerCase());
