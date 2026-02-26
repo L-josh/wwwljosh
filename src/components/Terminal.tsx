@@ -6,6 +6,7 @@ import { textLine, emptyLine } from '../commands/types';
 import TerminalOutput from './TerminalOutput';
 import TerminalInput from './TerminalInput';
 import BootSequence from './BootSequence';
+import PongGame from './PongGame';
 
 const MOTD_TEXT = 'The JDL Personal Computer JOS\nVersion 1.00 (C)Copyright L-josh 2026\nType \'help\' to see available commands.';
 
@@ -24,7 +25,7 @@ const MOTD: OutputEntry[] = [
   },
 ];
 
-type Phase = 'turning-on' | 'booting' | 'typing-motd' | 'ready' | 'shutting-down' | 'off';
+type Phase = 'turning-on' | 'booting' | 'typing-motd' | 'ready' | 'pong' | 'shutting-down' | 'off';
 
 const SHUTDOWN_DURATION = 800;
 const TURNON_DURATION = 1500;
@@ -39,7 +40,15 @@ export default function Terminal() {
     setTimeout(() => setPhase('off'), SHUTDOWN_DURATION);
   }, []);
 
-  const { output, executeCommand } = useTerminal(MOTD, handlePowerOff);
+  const handlePong = useCallback(() => {
+    setPhase('pong');
+  }, []);
+
+  const handleExitPong = useCallback(() => {
+    setPhase('ready');
+  }, []);
+
+  const { output, executeCommand } = useTerminal(MOTD, handlePowerOff, handlePong);
   const { push, navigateUp, navigateDown } = useCommandHistory();
 
   // Transition from turn-on animation to boot sequence
@@ -117,6 +126,8 @@ export default function Terminal() {
                       <span className="cursor">_</span>
                     </div>
                   </div>
+                ) : phase === 'pong' ? (
+                  <PongGame onExit={handleExitPong} />
                 ) : phase === 'ready' ? (
                   <>
                     <TerminalOutput entries={output} />
