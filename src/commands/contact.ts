@@ -3,7 +3,7 @@ import { emptyLine } from "./types";
 
 export const contactCommand: CommandHandler = {
   name: "contact",
-  description: "How to reach me",
+  description: "How to reach Josh",
   execute: () => ({
     lines: [
       emptyLine(),

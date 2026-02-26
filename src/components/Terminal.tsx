@@ -7,7 +7,7 @@ import TerminalOutput from './TerminalOutput';
 import TerminalInput from './TerminalInput';
 import BootSequence from './BootSequence';
 
-const MOTD_TEXT = 'The JDL Personal Computer JOS\nVersion 1.00 (C)Copyright L-josh 2026';
+const MOTD_TEXT = 'The JDL Personal Computer JOS\nVersion 1.00 (C)Copyright L-josh 2026\nType \'help\' to see available commands.';
 
 let nextMotdId = -100;
 
@@ -18,6 +18,7 @@ const MOTD: OutputEntry[] = [
     content: [
       textLine('The JDL Personal Computer JOS'),
       textLine('Version 1.00 (C)Copyright L-josh 2026'),
+      textLine('Type \'help\' to see available commands.'),
       emptyLine(),
     ],
   },
@@ -61,7 +62,7 @@ export default function Terminal() {
 
     let charIndex = 0;
     const totalChars = MOTD_TEXT.length;
-    const charDelay = Math.min(2, 80 / totalChars);
+    const charDelay = Math.min(2, 150 / totalChars);
     let timeoutId: ReturnType<typeof setTimeout>;
 
     function printNext() {
