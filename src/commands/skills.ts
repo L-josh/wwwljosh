@@ -7,10 +7,9 @@ export const skillsCommand: CommandHandler = {
   execute: () => ({
     lines: [
       emptyLine(),
-      textLine("  Languages     TypeScript, Python"),
+      textLine("  Languages     Python, C++, SQL"),
       textLine("  Frontend      React, HTML, CSS"),
-      textLine("  Backend       Node.js, Express"),
-      textLine("  Tools         Git, Excel, Claude"),
+      textLine("  Tools         Git, Claude Code/Codex"),
       textLine("  Learning      Rust, Systems Programming"),
       emptyLine(),
     ],
